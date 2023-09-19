@@ -66,10 +66,11 @@ public class CreditCalcServiceImpl implements CreditCalcService {
         for (int i = 1; i <= creditDTO.getTerm(); i++) {
             BigDecimal interestPayment = remainingDebt.multiply(monthRate, MathContext.DECIMAL128);
             BigDecimal debtPayment = monthlyPayment.subtract(interestPayment, MathContext.DECIMAL128);
+            if(i != creditDTO.getTerm()) remainingDebt = remainingDebt.subtract(debtPayment, MathContext.DECIMAL128);
+            else remainingDebt = new BigDecimal(0);
 
             list.add(new PaymentScheduleElement(i, currentDate.plusMonths(i), monthlyPayment,
                     interestPayment, debtPayment, remainingDebt));
-            remainingDebt = remainingDebt.subtract(debtPayment, MathContext.DECIMAL128);
         }
 
         return list;
